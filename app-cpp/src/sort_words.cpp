@@ -1,25 +1,60 @@
-#include <iostream>
-#include <string>
+import java.io.*;
+import java.util.*;
 
-void sort_words(std::string input_dir, std::string output_dir, std::size_t& num_words, double& execution_time)
-{
-    // TO-DO implement sort_words logic
-}
+public class WordSorter {
+    private long numberOfWords = 0;
+    private double executionTimeInSeconds = 0.0;
 
-int main(int argc, char** argv)
-{
-    std::size_t num_words = 0;
-    double execution_time = 0.0;
+    public void sortWords(String inputDirectory, String outputDirectory) {
+        try {
+            long startTime = System.currentTimeMillis();
 
-    if (argc != 3) {
-        std::cerr << "improper number of arguments" << std::endl;
-        return 1;
+            // Read words from the input file
+            BufferedReader reader = new BufferedReader(new FileReader(inputDirectory));
+            List<String> words = new ArrayList<>();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                // Split the line into words by whitespace
+                String[] splitWords = line.split("\\s+");
+                // Add each word to the list
+                words.addAll(Arrays.asList(splitWords));
+            }
+            reader.close();
+
+            // Sort the words
+            Collections.sort(words);
+
+            // Write sorted words to the output file
+            BufferedWriter writer = new BufferedWriter(new FileWriter(outputDirectory));
+            for (String word : words) {
+                writer.write(word);
+                writer.newLine();
+            }
+            writer.close();
+
+            // Calculate execution time
+            long endTime = System.currentTimeMillis();
+            executionTimeInSeconds = (endTime - startTime) / 1000.0;
+
+            // Set the number of words
+            numberOfWords = words.size();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    sort_words(std::string(argv[1]), std::string(argv[2]), num_words, execution_time);
+    public static void main(String[] args) {
+        if (args.length != 2) {
+            System.err.println("Usage: java WordSorter <inputDirectory> <outputDirectory>");
+            System.exit(1);
+        }
 
-    std::cout << "Finished sorting " << num_words << " words";
-    std::cout << " in " << execution_time << " miliseconds" << std::endl;
+        WordSorter wordSorter = new WordSorter();
 
-    return 0;
+        wordSorter.sortWords(args[0], args[1]);
+
+        System.out.print("Finished sorting " + wordSorter.numberOfWords + " words");
+        System.out.println(" in " + wordSorter.executionTimeInSeconds + " seconds");
+    }
 }
