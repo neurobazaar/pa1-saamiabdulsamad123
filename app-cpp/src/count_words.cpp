@@ -1,30 +1,25 @@
-import java.io.*;
-import java.nio.file.*;
-import java.util.*;
+#include <iostream>
+#include <string>
 
-public class UniqueWordCounter {
-    public static void main(String[] args) throws IOException {
-        Path sourceDir = Paths.get(args[0]);
-        Path resultDir = Paths.get(args[1]);
+void count_words(std::string input_dir, std::string output_dir, std::size_t& dataset_size, double& execution_time)
+{
+    // TO-DO implement count words logic
+}
 
-        Files.walk(sourceDir)
-            .filter(Files::isRegularFile)
-            .forEach(sourceFile -> {
-                try {
-                    Map<String, Integer> uniqueWordCounts = new HashMap<>();
-                    Files.readAllLines(sourceFile)
-                        .stream()
-                        .flatMap(line -> Arrays.stream(line.split("\\W+")))
-                        .forEach(word -> uniqueWordCounts.put(word, uniqueWordCounts.getOrDefault(word, 0) + 1));
+int main(int argc, char** argv)
+{
+    std::size_t dataset_size = 0;
+    double execution_time = 0.0;
 
-                    Path resultFile = resultDir.resolve(sourceDir.relativize(sourceFile));
-                    Files.createDirectories(resultFile.getParent());
-                    try (PrintWriter writer = new PrintWriter(Files.newBufferedWriter(resultFile))) {
-                        uniqueWordCounts.forEach((word, count) -> writer.println(word + " " + count));
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
+    if (argc != 3) {
+        std::cerr << "improper number of arguments" << std::endl;
+        return 1;
     }
+
+    count_words(std::string(argv[1]), std::string(argv[2]), dataset_size, execution_time);
+
+    std::cout << "Finished counting " << dataset_size << " MiB of words";
+    std::cout << " in " << execution_time << " miliseconds" << std::endl;
+
+    return 0;
 }
